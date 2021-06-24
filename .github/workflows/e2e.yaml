@@ -1,0 +1,24 @@
+name: e2e
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./
+        id: akoi
+      - run: test -d "${{ steps.akoi.outputs.directory }}"
+
+      # https://github.com/suzuki-shunsuke/github-comment
+      - run: github-comment exec -- echo e2e-test passed
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
