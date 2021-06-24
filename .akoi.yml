@@ -1,0 +1,10 @@
+bin_path: '{{.Name}}-{{.Version}}'
+link_path: '{{.Name}}'
+
+packages:
+  github-comment:
+    url: https://github.com/suzuki-shunsuke/github-comment/releases/download/{{.Version}}/github-comment_{{trimPrefix "v" .Version}}_{{.OS}}_{{.Arch}}.tar.gz
+    version: v3.0.1 # renovate: depName=suzuki-shunsuke/github-comment
+    files:
+      - name: github-comment
+        archive: github-comment

@@ -1,0 +1,24 @@
+name: akoi-action
+description: run akoi
+inputs:
+  config:
+    description: path to akoi config
+    required: true
+    default: ${{ github.workspace }}/.akoi.yml
+  version:
+    description: akoi version
+    required: true
+    default: v2.2.1 # renovate: depName=suzuki-shunsuke/akoi
+outputs:
+  directory:
+    description: path to binary directory
+    value: ${{ steps.run.outputs.directory }}
+runs:
+  using: composite
+  steps:
+    - run: ${{ github.action_path }}/run.sh
+      env:
+        AKOI_CONFIG: ${{ inputs.config }}
+        AKOI_VERSION: ${{ inputs.version }}
+      shell: bash
+      id: run
