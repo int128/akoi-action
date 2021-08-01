@@ -1,33 +1,63 @@
-# typescript-action [![ts](https://github.com/int128/typescript-action/actions/workflows/ts.yaml/badge.svg)](https://github.com/int128/typescript-action/actions/workflows/ts.yaml)
+# akoi-action [![ts](https://github.com/int128/akoi-action/actions/workflows/ts.yaml/badge.svg)](https://github.com/int128/akoi-action/actions/workflows/ts.yaml)
 
-This is a template of TypeScript Action.
+This is an action to install packages using https://github.com/suzuki-shunsuke/akoi.
 
 
 ## Getting Started
 
-To run this action:
+Define packages in `.akoi.yml`.
+
+```yaml
+bin_path: '{{.Name}}-{{.Version}}'
+link_path: '{{.Name}}'
+
+packages:
+  # just an example
+  github-comment:
+    url: https://github.com/suzuki-shunsuke/github-comment/releases/download/{{.Version}}/github-comment_{{trimPrefix "v" .Version}}_{{.OS}}_{{.Arch}}.tar.gz
+    version: v3.0.1
+    files:
+      - name: github-comment
+        archive: github-comment
+```
+
+**NOTE**: you need to set `bin_path` and `link_path` as above.
+
+To install the packages:
 
 ```yaml
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: int128/typescript-action@v1
+      - uses: int128/akoi-action@v2
+```
+
+You can set a path to akoi config.
+
+```yaml
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: int128/akoi-action@v2
         with:
-          name: hello
+          config: your-app/.akoi.yml
 ```
 
 
 ## Inputs
 
-| Name | Required | Default | Description
-|------|----------|---------|------------
-| `name` | `true` | - | example input
+| Name | Default | Description
+|------|---------|------------
+| `config` | `${{ github.workspace }}/.akoi.yml` | path to akoi config
+| `version` | see action.yaml | akoi version
 
 
 ## Outputs
 
 | Name | Description
 |------|------------
-| `example` | example output
+| `directory` | path to binary directory

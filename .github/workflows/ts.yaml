@@ -2,14 +2,18 @@ name: ts
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - main-v2
     paths:
       - src/**
       - tests/**
       - '*.json'
       - .github/workflows/ts.yaml
   pull_request:
-    branches: [main]
+    branches:
+      - main
+      - main-v2
     paths:
       - src/**
       - tests/**
@@ -36,7 +40,10 @@ jobs:
       - run: yarn build
       - run: yarn package
 
-      - name: e2e-test
-        uses: ./
-        with:
-          name: foo
+      - uses: ./
+        id: akoi
+      - run: ls -la "${{ steps.akoi.outputs.directory }}"
+      # https://github.com/suzuki-shunsuke/github-comment
+      - run: github-comment exec -- echo e2e-test passed
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

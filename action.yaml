@@ -1,9 +1,17 @@
-name: hello-world
-description: say Hello World
+name: akoi
+description: install packages using akoi
 inputs:
-  name:
-    description: example input
+  config:
+    description: path to akoi config
     required: true
+    default: ${{ github.workspace }}/.akoi.yml
+  version:
+    description: akoi version
+    required: true
+    default: v2.2.1 # renovate: depName=suzuki-shunsuke/akoi
+outputs:
+  directory:
+    description: path to binary directory
 runs:
   using: 'node12'
   main: 'dist/index.js'

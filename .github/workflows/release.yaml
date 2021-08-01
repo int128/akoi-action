@@ -2,11 +2,15 @@ name: release
 
 on:
   pull_request:
-    branches: [main]
+    branches:
+      - main
+      - main-v2
     paths:
       - .github/workflows/release.yaml
   push:
-    branches: [main]
+    branches:
+      - main
+      - main-v2
 
 jobs:
   tag:
@@ -27,4 +31,4 @@ jobs:
       - if: github.event_name == 'push'
         uses: ./.github/actions/release
         with:
-          tag-name: v1
+          tag-name: v2

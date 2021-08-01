@@ -3,9 +3,11 @@ import { run } from './run'
 
 const main = async (): Promise<void> => {
   try {
-    await run({
-      name: core.getInput('name', { required: true }),
+    const outputs = await run({
+      config: core.getInput('config', { required: true }),
+      version: core.getInput('version', { required: true }),
     })
+    core.setOutput('directory', outputs.directory)
   } catch (error) {
     core.setFailed(error.message)
   }
