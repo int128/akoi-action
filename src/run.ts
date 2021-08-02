@@ -30,7 +30,11 @@ export const run = async (inputs: Inputs): Promise<Outputs> => {
   core.startGroup(`Restore cache`)
   const cacheKey = `akoi-${configDigest}`
   const cacheHit = await cache.restoreCache([binDir], cacheKey)
-  core.info(`Found cache at key ${cacheHit}`)
+  if (cacheKey === undefined) {
+    core.info(`No cache found from key ${cacheKey}`)
+  } else {
+    core.info(`Found cache from key ${cacheHit}`)
+  }
   core.endGroup()
 
   core.startGroup(`Run akoi`)
@@ -41,6 +45,7 @@ export const run = async (inputs: Inputs): Promise<Outputs> => {
 
   if (cacheHit === undefined) {
     core.startGroup(`Save cache`)
+    core.info(`Saving cache to key ${cacheKey}`)
     await cache.saveCache([binDir], cacheKey)
     core.endGroup()
   }
