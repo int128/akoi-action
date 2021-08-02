@@ -9,6 +9,10 @@ inputs:
     description: akoi version
     required: true
     default: v2.2.1 # renovate: depName=suzuki-shunsuke/akoi
+  base-directory:
+    description: base directory to download packages
+    required: true
+    default: ${{ github.workspace }}/.akoi
 outputs:
   directory:
     description: path to binary directory

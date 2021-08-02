@@ -36,7 +36,7 @@ jobs:
       - uses: int128/akoi-action@v2
 ```
 
-This action downloads the packages into directory `.akoi/{digest of .akoi.yml}` and saves it to cache.
+This action downloads the packages into directory `{github.workspace}/.akoi/{sha256 digest of akoi.yml}` and saves them to cache.
 It restores the packages from cache next time.
 
 You can set a path to akoi config.
@@ -58,10 +58,11 @@ jobs:
 |------|---------|------------
 | `config` | `${{ github.workspace }}/.akoi.yml` | path to akoi config
 | `version` | see action.yaml | akoi version
+| `base-directory` | `${{ github.workspace }}/.akoi` | base directory to download packages
 
 
 ## Outputs
 
 | Name | Description
 |------|------------
-| `directory` | path to binary directory
+| `directory` | path to binary directory, i.e. `{base-directory}/{digest}`
