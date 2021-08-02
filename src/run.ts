@@ -10,6 +10,7 @@ import * as os from 'os'
 type Inputs = {
   config: string
   version: string
+  baseDirectory: string
 }
 
 type Outputs = {
@@ -18,9 +19,9 @@ type Outputs = {
 
 export const run = async (inputs: Inputs): Promise<Outputs> => {
   const configDigest = await digest(inputs.config)
-  const binDir = `.akoi/${configDigest}`
+  const binDir = `${inputs.baseDirectory}/${configDigest}`
   core.info(`Digest of config is ${configDigest}`)
-  core.info(`Install to ${binDir}`)
+  core.info(`Install packages to ${binDir}`)
 
   core.startGroup(`Install akoi`)
   const akoiDir = await installAkoi(inputs.version)

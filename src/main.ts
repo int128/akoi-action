@@ -6,6 +6,7 @@ const main = async (): Promise<void> => {
     const outputs = await run({
       config: core.getInput('config', { required: true }),
       version: core.getInput('version', { required: true }),
+      baseDirectory: core.getInput('base-directory', { required: true }),
     })
     core.setOutput('directory', outputs.directory)
   } catch (error) {
