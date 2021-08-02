@@ -2,10 +2,13 @@
 
 This is an action to install packages using https://github.com/suzuki-shunsuke/akoi.
 
+This version v2 is written in TypeScript.
+v1 is still available in [v1 branch](https://github.com/int128/akoi-action/tree/v1).
+
 
 ## Getting Started
 
-Define packages in `.akoi.yml`.
+Create `.akoi.yml` and add packages.
 
 ```yaml
 bin_path: '{{.Name}}-{{.Version}}'
@@ -28,23 +31,24 @@ To install the packages:
 ```yaml
 jobs:
   test:
-    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: int128/akoi-action@v2
 ```
+
+This action downloads the packages into directory `.akoi/{digest of .akoi.yml}` and saves it to cache.
+It restores the packages from cache next time.
 
 You can set a path to akoi config.
 
 ```yaml
 jobs:
   test:
-    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: int128/akoi-action@v2
         with:
-          config: your-app/.akoi.yml
+          config: path/to/.akoi.yml
 ```
 
 
