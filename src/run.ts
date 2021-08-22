@@ -48,7 +48,7 @@ export const run = async (inputs: Inputs): Promise<Outputs> => {
     try {
       await cache.saveCache([binDir], cacheKey)
     } catch (error) {
-      core.warning(`could not save cache: ${error}`)
+      core.warning(error)
     }
     core.endGroup()
   }
