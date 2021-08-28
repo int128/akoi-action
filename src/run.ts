@@ -3,9 +3,8 @@ import * as core from '@actions/core'
 import * as exec from '@actions/exec'
 import * as io from '@actions/io'
 import * as tc from '@actions/tool-cache'
-import { createHash } from 'crypto'
-import * as fs from 'fs'
 import * as os from 'os'
+import { digest } from './digest'
 
 type Inputs = {
   config: string
@@ -75,18 +74,3 @@ const installAkoi = async (version: string): Promise<string> => {
   await exec.exec('chmod', ['+x', `${cacheDir}/akoi`])
   return cacheDir
 }
-
-const digest = async (name: string): Promise<string> =>
-  new Promise((resolve, reject) => {
-    try {
-      const h = createHash('sha256')
-      const f = fs.createReadStream(name)
-      f.pipe(h)
-      f.close()
-      h.end(() => {
-        resolve(h.digest('hex'))
-      })
-    } catch (error) {
-      reject(error)
-    }
-  })
