@@ -18,59 +18,54 @@ type Outputs = {
 
 export const run = async (inputs: Inputs): Promise<Outputs> => {
   const configDigest = await digest(inputs.config)
-  const binDir = `${inputs.baseDirectory}/${configDigest}`
-  core.info(`Digest of config is ${configDigest}`)
-  core.info(`Install packages to ${binDir}`)
+  const cacheKeyPrefix = `akoi-cache-v1-`
+  const cacheKey = `${cacheKeyPrefix}${configDigest}`
+  core.info(`Cache key is ${cacheKey}`)
 
-  core.startGroup(`Install akoi`)
-  const akoiDir = await installAkoi(inputs.version)
-  core.addPath(akoiDir)
-  core.endGroup()
+  const directory = `${inputs.baseDirectory}/${configDigest}`
+  core.addPath(directory)
+  core.info(`Install packages to ${directory}`)
 
   core.startGroup(`Restore cache`)
-  const cacheKey = `akoi-${configDigest}`
-  const cacheHit = await cache.restoreCache([binDir], cacheKey)
+  const cacheHit = await cache.restoreCache([directory], cacheKey, [cacheKeyPrefix])
   if (cacheHit === undefined) {
-    core.info(`No cache found from key ${cacheKey}`)
+    core.info(`No cache found`)
   }
   core.endGroup()
 
+  if (cacheHit === undefined) {
+    core.startGroup(`Install akoi`)
+    await downloadAkoi(directory, inputs.version)
+    core.endGroup()
+  }
+
   core.startGroup(`Run akoi`)
-  await io.mkdirP(binDir)
-  await io.cp(inputs.config, `${binDir}/.akoi.yml`)
-  await exec.exec('akoi', ['install'], { cwd: binDir })
+  await io.cp(inputs.config, `${directory}/.akoi.yml`)
+  await exec.exec('akoi', ['install'], { cwd: directory })
   core.endGroup()
 
   if (cacheHit === undefined) {
     core.startGroup(`Save cache`)
-    core.info(`Saving cache to key ${cacheKey}`)
     try {
-      await cache.saveCache([binDir], cacheKey)
+      await cache.saveCache([directory], cacheKey)
     } catch (error) {
-      core.warning(error)
+      core.info(`Could not save cache: ${JSON.stringify(error)}`)
     }
     core.endGroup()
   }
 
-  core.info(`Add ${binDir} to path`)
-  core.addPath(binDir)
-  return { directory: binDir }
+  return { directory }
 }
 
-const installAkoi = async (version: string): Promise<string> => {
-  let cacheDir = tc.find('akoi', version)
-  if (cacheDir !== '') {
-    core.info(`Found cache at ${cacheDir}`)
-    return cacheDir
-  }
-
+const downloadAkoi = async (directory: string, version: string): Promise<void> => {
   const platform = os.platform()
   const tv = version.substring(1)
   const url = `https://github.com/suzuki-shunsuke/akoi/releases/download/${version}/akoi_${tv}_${platform}_amd64`
   core.info(`Downloading ${url}`)
-  const t = await tc.downloadTool(url)
-  cacheDir = await tc.cacheFile(t, 'akoi', 'akoi', version)
-  core.info(`Saved cache to ${cacheDir}`)
-  await exec.exec('chmod', ['+x', `${cacheDir}/akoi`])
-  return cacheDir
+  const downloaded = await tc.downloadTool(url)
+  await exec.exec('chmod', ['+x', downloaded])
+
+  core.info(`Move to ${directory}/akoi`)
+  await io.mkdirP(directory)
+  await io.mv(downloaded, `${directory}/akoi`)
 }
