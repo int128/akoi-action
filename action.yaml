@@ -17,5 +17,5 @@ outputs:
   directory:
     description: path to binary directory
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'dist/index.js'
