@@ -1,3 +1,7 @@
+:warning: https://github.com/suzuki-shunsuke/akoi has been archived.
+
+----
+
 # akoi-action [![ts](https://github.com/int128/akoi-action/actions/workflows/ts.yaml/badge.svg)](https://github.com/int128/akoi-action/actions/workflows/ts.yaml)
 
 This is an action to install packages using https://github.com/suzuki-shunsuke/akoi.
